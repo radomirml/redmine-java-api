@@ -292,6 +292,7 @@ public class RedmineJSONBuilder {
 		if (issue.getAssignee() != null)
 			JsonOutput.addIfNotNull(writer, "assigned_to_id", issue
 					.getAssignee().getId());
+		JsonOutput.addIfNotNull(writer, "activity_id", issue.getActivityId());
 		JsonOutput.addIfNotNull(writer, "priority_id", issue.getPriorityId());
 		JsonOutput.addIfNotNull(writer, "done_ratio", issue.getDoneRatio());
         if (issue.getProject() != null) {

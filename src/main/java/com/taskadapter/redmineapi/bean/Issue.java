@@ -43,6 +43,7 @@ public class Issue implements Identifiable {
     private String statusName;
     private Version targetVersion;
     private IssueCategory category;
+    private Integer activityId;
 
     /**
      * Some comment describing the issue update
@@ -419,7 +420,16 @@ public class Issue implements Identifiable {
         this.priorityId = priorityId;
     }
 
-    public Version getTargetVersion() {
+    public Integer getActivityId() {
+      return activityId;
+    }
+
+    public void setActivityId(Integer activityId) {
+      this.activityId = activityId;
+    }
+
+
+  public Version getTargetVersion() {
         return targetVersion;
     }
 

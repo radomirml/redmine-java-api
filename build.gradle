@@ -7,8 +7,8 @@ apply plugin: 'signing'
 // from this Gradle script - for those who don't have Gradle plugin installed in Eclipse
 apply plugin: 'eclipse'
 
-group = 'com.taskadapter'
-version = '2.6.0'
+group = 'com.github.radomirml'
+version = '2.6.0-er'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -67,10 +67,10 @@ def ossPasswordVar = hasProperty("ossPassword") ? ossPassword : ""
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+            repository(url: 'http://nexus.home:18787/nexus/content/repositories/releases') {
                 authentication(userName: ossUserVar, password: ossPasswordVar)
             }
-            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+            snapshotRepository(url: 'http://nexus.home:18787/nexus/content/repositories/snapshots') {
                 authentication(userName: ossUserVar, password: ossPasswordVar)
             }
 
