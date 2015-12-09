@@ -8,7 +8,7 @@ apply plugin: 'signing'
 apply plugin: 'eclipse'
 
 group = 'com.github.radomirml'
-version = '2.6.0-er'
+version = '2.6.1-er'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
