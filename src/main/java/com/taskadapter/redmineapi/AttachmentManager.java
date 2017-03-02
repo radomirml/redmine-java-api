@@ -129,7 +129,7 @@ public class AttachmentManager {
      */
     public Attachment uploadAttachment(String fileName, String contentType,
                                        InputStream content) throws RedmineException, IOException {
-        return uploadAttachment(fileName, contentType, content, null);
+        return uploadAttachment(fileName, contentType, content, null, -1);
     }
 
     /**
@@ -150,12 +150,12 @@ public class AttachmentManager {
      *             reading errors and transport errors.
      */
     public Attachment uploadAttachment(String fileName, String contentType,
-                                       InputStream content, Integer id) throws RedmineException, IOException {
+                                       InputStream content, Integer id, long length) throws RedmineException, IOException {
         final InputStream wrapper = new MarkedInputStream(content,
                 "uploadStream");
         final String token;
         try {
-            token = transport.upload(wrapper);
+            token = transport.upload(wrapper, length);
             final Attachment result = AttachmentFactory.create(id);
             result.setToken(token);
             result.setContentType(contentType);

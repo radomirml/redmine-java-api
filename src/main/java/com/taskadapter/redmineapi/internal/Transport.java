@@ -334,9 +334,13 @@ public final class Transport {
 	 *             if something goes wrong.
 	 */
 	public String upload(InputStream content) throws RedmineException {
+		return upload(content, -1);
+	}
+
+	public String upload(InputStream content, long length) throws RedmineException {
 		final URI uploadURI = getURIConfigurator().getUploadURI();
 		final HttpPost request = new HttpPost(uploadURI);
-		final AbstractHttpEntity entity = new InputStreamEntity(content, -1);
+		final AbstractHttpEntity entity = new InputStreamEntity(content, length);
 		/* Content type required by a Redmine */
 		entity.setContentType("application/octet-stream");
 		request.setEntity(entity);
