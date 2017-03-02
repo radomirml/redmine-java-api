@@ -1,6 +1,7 @@
 package com.taskadapter.redmineapi;
 
 import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
+import com.taskadapter.redmineapi.bean.ERCustomFieldDefinition;
 import com.taskadapter.redmineapi.internal.Transport;
 
 import java.util.List;
@@ -40,6 +41,14 @@ public class CustomFieldManager {
     public List<CustomFieldDefinition> getCustomFieldDefinitions()
             throws RedmineException {
         return transport.getObjectsList(CustomFieldDefinition.class);
+    }
+
+    /**
+     * Fetch custom field definitions from server. (for Easy Redmine)
+     */
+    public List<ERCustomFieldDefinition> getERCustomFieldDefinitions()
+            throws RedmineException {
+        return transport.getObjectsList(ERCustomFieldDefinition.class);
     }
 
 }

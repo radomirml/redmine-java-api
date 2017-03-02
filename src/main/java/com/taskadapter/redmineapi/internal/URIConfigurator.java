@@ -1,27 +1,7 @@
 package com.taskadapter.redmineapi.internal;
 
 import com.taskadapter.redmineapi.RedmineInternalError;
-import com.taskadapter.redmineapi.bean.Attachment;
-import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
-import com.taskadapter.redmineapi.bean.Group;
-import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.IssueCategory;
-import com.taskadapter.redmineapi.bean.IssuePriority;
-import com.taskadapter.redmineapi.bean.IssueRelation;
-import com.taskadapter.redmineapi.bean.IssueStatus;
-import com.taskadapter.redmineapi.bean.Membership;
-import com.taskadapter.redmineapi.bean.News;
-import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.Role;
-import com.taskadapter.redmineapi.bean.SavedQuery;
-import com.taskadapter.redmineapi.bean.TimeEntry;
-import com.taskadapter.redmineapi.bean.TimeEntryActivity;
-import com.taskadapter.redmineapi.bean.Tracker;
-import com.taskadapter.redmineapi.bean.User;
-import com.taskadapter.redmineapi.bean.Version;
-import com.taskadapter.redmineapi.bean.Watcher;
-import com.taskadapter.redmineapi.bean.WikiPage;
-import com.taskadapter.redmineapi.bean.WikiPageDetail;
+import com.taskadapter.redmineapi.bean.*;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -64,6 +44,7 @@ public class URIConfigurator {
 		urls.put(Watcher.class, "watchers");
         urls.put(WikiPage.class, "wiki/index");
         urls.put(WikiPageDetail.class, "wiki");
+                urls.put(ERCustomFieldDefinition.class, "api_custom_fields");
                 urls.put(CustomFieldDefinition.class, "custom_fields");
 	}
 

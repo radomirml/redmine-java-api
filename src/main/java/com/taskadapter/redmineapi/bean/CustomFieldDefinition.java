@@ -21,6 +21,8 @@ public class CustomFieldDefinition {
     private final List<String> possibleValues = new ArrayList<String>();
     private final List<Tracker> trackers = new ArrayList<Tracker>();
     private final List<Role> roles = new ArrayList<Role>();
+    private final List<Project> projects = new ArrayList<Project>();
+    private String internalName;
 
     /**
      * Use CustomFieldDefinitionFactory to create instances of this class.
@@ -147,6 +149,18 @@ public class CustomFieldDefinition {
         return roles;
     }
 
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,6 +187,7 @@ public class CustomFieldDefinition {
                 ", filter=" + filter + ", searchable=" + searchable +
                 ", multiple=" + multiple + ", defaultValue=" + defaultValue +
                 ", visible=" + visible + ", possibleValues=" + possibleValues +
-                ", trackers=" + trackers + ", roles=" + roles + '}';
+                ", trackers=" + trackers + ", roles=" + roles +
+                ", projects=" + projects + ", internalName=" + internalName + '}';
     }
 }

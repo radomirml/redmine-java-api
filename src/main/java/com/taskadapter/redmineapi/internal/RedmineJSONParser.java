@@ -1,65 +1,14 @@
 package com.taskadapter.redmineapi.internal;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.taskadapter.redmineapi.bean.AttachmentFactory;
-import com.taskadapter.redmineapi.bean.CustomFieldFactory;
-import com.taskadapter.redmineapi.bean.GroupFactory;
-import com.taskadapter.redmineapi.bean.IssueCategoryFactory;
-import com.taskadapter.redmineapi.bean.IssueFactory;
-import com.taskadapter.redmineapi.bean.IssuePriorityFactory;
-import com.taskadapter.redmineapi.bean.IssueRelationFactory;
-import com.taskadapter.redmineapi.bean.IssueStatusFactory;
-import com.taskadapter.redmineapi.bean.JournalFactory;
-import com.taskadapter.redmineapi.bean.MembershipFactory;
-import com.taskadapter.redmineapi.bean.NewsFactory;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
-import com.taskadapter.redmineapi.bean.RoleFactory;
-import com.taskadapter.redmineapi.bean.SavedQueryFactory;
-import com.taskadapter.redmineapi.bean.TimeEntryActivityFactory;
-import com.taskadapter.redmineapi.bean.TimeEntryFactory;
-import com.taskadapter.redmineapi.bean.TrackerFactory;
-import com.taskadapter.redmineapi.bean.UserFactory;
-import com.taskadapter.redmineapi.bean.VersionFactory;
-import com.taskadapter.redmineapi.bean.WatcherFactory;
-import com.taskadapter.redmineapi.bean.WikiPage;
-import com.taskadapter.redmineapi.bean.WikiPageDetail;
-import com.taskadapter.redmineapi.bean.WikiPageFactory;
+import com.taskadapter.redmineapi.bean.*;
+import com.taskadapter.redmineapi.internal.json.JsonInput;
+import com.taskadapter.redmineapi.internal.json.JsonObjectParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.taskadapter.redmineapi.bean.Attachment;
-import com.taskadapter.redmineapi.bean.Changeset;
-import com.taskadapter.redmineapi.bean.CustomField;
-import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
-import com.taskadapter.redmineapi.bean.CustomFieldDefinitionFactory;
-import com.taskadapter.redmineapi.bean.Group;
-import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.IssueCategory;
-import com.taskadapter.redmineapi.bean.IssueRelation;
-import com.taskadapter.redmineapi.bean.IssueStatus;
-import com.taskadapter.redmineapi.bean.Journal;
-import com.taskadapter.redmineapi.bean.JournalDetail;
-import com.taskadapter.redmineapi.bean.Membership;
-import com.taskadapter.redmineapi.bean.News;
-import com.taskadapter.redmineapi.bean.IssuePriority;
-import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.Role;
-import com.taskadapter.redmineapi.bean.SavedQuery;
-import com.taskadapter.redmineapi.bean.TimeEntry;
-import com.taskadapter.redmineapi.bean.TimeEntryActivity;
-import com.taskadapter.redmineapi.bean.Tracker;
-import com.taskadapter.redmineapi.bean.User;
-import com.taskadapter.redmineapi.bean.Version;
-import com.taskadapter.redmineapi.bean.Watcher;
-import com.taskadapter.redmineapi.internal.json.JsonInput;
-import com.taskadapter.redmineapi.internal.json.JsonObjectParser;
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * A parser for JSON items sent by Redmine.
@@ -255,6 +204,13 @@ public class RedmineJSONParser {
         @Override
         public CustomFieldDefinition parse(JSONObject input) throws JSONException {
             return parseCustomFieldDefinition(input);
+        }
+    };
+
+    public static final JsonObjectParser<ERCustomFieldDefinition> ER_CUSTOM_FIELD_DEFINITION_PARSER = new JsonObjectParser<ERCustomFieldDefinition>() {
+        @Override
+        public ERCustomFieldDefinition parse(JSONObject input) throws JSONException {
+            return parseERCustomFieldDefinition(input);
         }
     };
 
@@ -753,6 +709,85 @@ public class RedmineJSONParser {
                     result.getRoles().add(role);
                 }
             }
+            if (content.has("projects")) {
+                JSONArray projects = content.getJSONArray("projects");
+                for (int i = 0; i < projects.length(); i++) {
+                    JSONObject valueObject = projects.getJSONObject(i);
+                    int id = valueObject.getInt("id");
+                    String name = valueObject.getString("name");
+                    Project project = ProjectFactory.create(id);
+                    project.setName(name);
+                    result.getProjects().add(project);
+                }
+            }
             return result;
+        }
+
+        public static ERCustomFieldDefinition parseERCustomFieldDefinition(JSONObject content)
+                throws JSONException {
+
+					final ERCustomFieldDefinition result = (ERCustomFieldDefinition) CustomFieldDefinitionFactory
+							.create(JsonInput.getInt(content, "id"));
+					result.setName(JsonInput.getStringOrNull(content, "name"));
+					result.setCustomizedType(JsonInput.getStringOrNull(content, "customized_type"));
+					result.setFieldFormat(JsonInput.getStringNotNull(content, "field_format"));
+					result.setRegexp(JsonInput.getStringOrEmpty(content, "regexp"));
+					result.setMinLength(JsonInput.getIntOrNull(content, "min_length"));
+					result.setMaxLength(JsonInput.getIntOrNull(content, "max_length"));
+					result.setRequired(content.optBoolean("is_required"));
+					result.setFilter(content.optBoolean("is_filter"));
+					result.setSearchable(content.optBoolean("searchable"));
+					result.setMultiple(content.optBoolean("multiple"));
+					result.setDefaultValue(JsonInput.getStringOrEmpty(content, "default_value"));
+					result.setVisible(content.optBoolean("visible"));
+					if (content.has("possible_values")) {
+						JSONArray possible_values = content.getJSONArray("possible_values");
+						for (int i = 0; i < possible_values.length(); i++) {
+							Object v = possible_values.get(i);
+							String value = null;
+							if (v instanceof  JSONObject) {
+								value = ((JSONObject) v).getString("value");
+							} else if (v instanceof String) {
+								value = (String) v;
+							}
+							if (value != null)
+								result.getPossibleValues().add(value);
+						}
+					}
+					/*
+					if (content.has("trackers")) {
+						JSONArray possible_values = content.getJSONArray("trackers");
+						for (int i = 0; i < possible_values.length(); i++) {
+							JSONObject valueObject = possible_values.getJSONObject(i);
+							int id = valueObject.getInt("id");
+							String name = valueObject.getString("name");
+							result.getTrackers().add(TrackerFactory.create(id, name));
+						}
+					}
+					if (content.has("roles")) {
+						JSONArray possible_values = content.getJSONArray("roles");
+						for (int i = 0; i < possible_values.length(); i++) {
+							JSONObject valueObject = possible_values.getJSONObject(i);
+							int id = valueObject.getInt("id");
+							String name = valueObject.getString("name");
+							Role role = RoleFactory.create(id);
+							role.setName(name);
+							result.getRoles().add(role);
+						}
+					}
+					*/
+					if (content.has("projects")) {
+						JSONArray projects = content.getJSONArray("projects");
+						for (int i = 0; i < projects.length(); i++) {
+							JSONObject valueObject = projects.getJSONObject(i);
+							int id = valueObject.getInt("id");
+							String name = valueObject.getString("name");
+							Project project = ProjectFactory.create(id);
+							project.setName(name);
+							result.getProjects().add(project);
+						}
+					}
+					result.setInternalName(JsonInput.getStringOrNull(content, "internal_name"));
+					return result;
         }
 }

@@ -1,39 +1,8 @@
 package com.taskadapter.redmineapi.internal;
 
-import com.taskadapter.redmineapi.NotFoundException;
-import com.taskadapter.redmineapi.RedmineAuthenticationException;
-import com.taskadapter.redmineapi.RedmineException;
-import com.taskadapter.redmineapi.RedmineFormatException;
-import com.taskadapter.redmineapi.RedmineInternalError;
-import com.taskadapter.redmineapi.RedmineManager;
-import com.taskadapter.redmineapi.bean.Attachment;
-import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
-import com.taskadapter.redmineapi.bean.Group;
-import com.taskadapter.redmineapi.bean.Identifiable;
-import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.IssueCategory;
-import com.taskadapter.redmineapi.bean.IssuePriority;
-import com.taskadapter.redmineapi.bean.IssueRelation;
-import com.taskadapter.redmineapi.bean.IssueStatus;
-import com.taskadapter.redmineapi.bean.Membership;
-import com.taskadapter.redmineapi.bean.News;
-import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.Role;
-import com.taskadapter.redmineapi.bean.SavedQuery;
-import com.taskadapter.redmineapi.bean.TimeEntry;
-import com.taskadapter.redmineapi.bean.TimeEntryActivity;
-import com.taskadapter.redmineapi.bean.Tracker;
-import com.taskadapter.redmineapi.bean.User;
-import com.taskadapter.redmineapi.bean.Version;
-import com.taskadapter.redmineapi.bean.Watcher;
-import com.taskadapter.redmineapi.bean.WikiPage;
-import com.taskadapter.redmineapi.bean.WikiPageDetail;
-import com.taskadapter.redmineapi.internal.comm.BaseCommunicator;
-import com.taskadapter.redmineapi.internal.comm.BasicHttpResponse;
-import com.taskadapter.redmineapi.internal.comm.Communicator;
-import com.taskadapter.redmineapi.internal.comm.Communicators;
-import com.taskadapter.redmineapi.internal.comm.ContentHandler;
-import com.taskadapter.redmineapi.internal.comm.SimpleCommunicator;
+import com.taskadapter.redmineapi.*;
+import com.taskadapter.redmineapi.bean.*;
+import com.taskadapter.redmineapi.internal.comm.*;
 import com.taskadapter.redmineapi.internal.comm.redmine.RedmineAuthenticator;
 import com.taskadapter.redmineapi.internal.comm.redmine.RedmineErrorHandler;
 import com.taskadapter.redmineapi.internal.json.JsonInput;
@@ -43,11 +12,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
@@ -62,12 +27,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class Transport {
 	private static final Map<Class<?>, EntityConfig<?>> OBJECT_CONFIGS = new HashMap<Class<?>, EntityConfig<?>>();
@@ -164,6 +124,10 @@ public final class Transport {
                 WikiPageDetail.class,
                 config("wiki_page", null, null, RedmineJSONParser.WIKI_PAGE_DETAIL_PARSER)
         );
+        OBJECT_CONFIGS.put(
+                ERCustomFieldDefinition.class,
+                config("custom_field", "api_custom_fields", null,
+                        RedmineJSONParser.ER_CUSTOM_FIELD_DEFINITION_PARSER));
         OBJECT_CONFIGS.put(
                 CustomFieldDefinition.class,
                 config("custom_field", "custom_fields", null,
